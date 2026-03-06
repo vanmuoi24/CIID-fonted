@@ -1,108 +1,114 @@
-import { useRef, useState } from 'react';
-import { ProTable } from '@ant-design/pro-components';
-import { Button, message, Modal, Form, ConfigProvider } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import viVN from 'antd/locale/vi_VN';
-import AdminLayout from '../layout/AdminLayout';
-import DocumentFormModal from '../components/DocumentFormModal';
-import apiService from '../services/apiService';
-import dayjs from 'dayjs';
-import 'dayjs/locale/vi';
+import { useEffect, useRef, useState } from "react";
+import { ProTable } from "@ant-design/pro-components";
+import { Button, message, Modal, Form, ConfigProvider } from "antd";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
+import viVN from "antd/locale/vi_VN";
+import AdminLayout from "../layout/AdminLayout";
+import DocumentFormModal from "../components/DocumentFormModal";
+import apiService from "../services/apiService";
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
 
-dayjs.locale('vi');
+dayjs.locale("vi");
 
 const Documents = () => {
   const actionRef = useRef();
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState('add');
+  const [modalType, setModalType] = useState("add");
   const [currentRecord, setCurrentRecord] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [certifications, setCertifications] = useState([]);
   // Columns definition
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
+      title: "ID",
+      dataIndex: "id",
       width: 60,
       search: false,
     },
     {
-      title: 'Application ID',
-      dataIndex: 'applicationId',
+      title: "Application ID",
+      dataIndex: "applicationId",
       width: 120,
       hideInTable: true,
     },
     {
-      title: 'Loại CV',
-      dataIndex: 'cvType',
+      title: "Loại CV",
+      dataIndex: "cvType",
       width: 100,
-      valueType: 'select',
+      valueType: "select",
       valueEnum: {
-        'CNLS': { text: 'CNLS', status: 'Processing' },
-        'HPLS': { text: 'HPLS', status: 'Success' },
-        'OTHER': { text: 'Khác', status: 'Default' },
+        CNLS: { text: "CNLS", status: "Processing" },
+        HPLS: { text: "HPLS", status: "Success" },
+        OTHER: { text: "Khác", status: "Default" },
       },
     },
     {
-      title: 'Tên giấy tờ',
-      dataIndex: 'documentTitle',
+      title: "Tên giấy tờ",
+      dataIndex: "documentTitle",
       width: 180,
       ellipsis: true,
     },
     {
-      title: 'Loại giấy tờ',
-      dataIndex: 'documentType',
+      title: "Loại giấy tờ",
+      dataIndex: "documentType",
       width: 120,
-      valueType: 'select',
+      valueType: "select",
       valueEnum: {
-        'Bản chính': { text: 'Bản chính', status: 'Success' },
-        'Bản sao': { text: 'Bản sao', status: 'Processing' },
-        'Bản dịch': { text: 'Bản dịch', status: 'Warning' },
+        "Bản chính": { text: "Bản chính", status: "Success" },
+        "Bản sao": { text: "Bản sao", status: "Processing" },
+        "Bản dịch": { text: "Bản dịch", status: "Warning" },
       },
     },
     {
-      title: 'Người giữ',
-      dataIndex: 'holderName',
+      title: "Người giữ",
+      dataIndex: "holderName",
       width: 150,
       ellipsis: true,
     },
     {
-      title: 'Số tham chiếu',
-      dataIndex: 'referenceNumber',
+      title: "Số tham chiếu",
+      dataIndex: "referenceNumber",
       width: 120,
     },
     {
-      title: 'Ngày cấp',
-      dataIndex: 'issueDate',
+      title: "Ngày cấp",
+      dataIndex: "issueDate",
       width: 120,
-      valueType: 'date',
-      render: (_, record) => record.issueDate ? dayjs(record.issueDate).format('DD/MM/YYYY') : '-',
+      valueType: "date",
+      render: (_, record) =>
+        record.issueDate ? dayjs(record.issueDate).format("DD/MM/YYYY") : "-",
     },
     {
-      title: 'Cơ quan chứng thực',
-      dataIndex: 'certifyingAuthority',
+      title: "Cơ quan chứng thực",
+      dataIndex: "certifyingAuthority",
       width: 200,
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: 'Người ký',
-      dataIndex: 'certifyingSignatory',
+      title: "Người ký",
+      dataIndex: "certifyingSignatory",
       width: 150,
       hideInSearch: true,
     },
     {
-      title: 'Chức danh',
-      dataIndex: 'certifyingTitle',
+      title: "Chức danh",
+      dataIndex: "certifyingTitle",
       width: 150,
       hideInSearch: true,
     },
     {
-      title: 'Thao tác',
-      valueType: 'option',
+      title: "Thao tác",
+      valueType: "option",
       width: 150,
-      fixed: 'right',
+      fixed: "right",
       render: (_, record) => [
         <Button
           key="view"
@@ -140,22 +146,42 @@ const Documents = () => {
   const fetchDocuments = async (params) => {
     try {
       const response = await apiService.documents.getAll();
-      
+      let data = response.data || [];
+      console.log("Fetched applications:", data);
+      // Filter theo Application ID
+      if (params.applicationId) {
+        const application = certifications.find(
+          (app) => String(app.stampNumber) === String(params.applicationId),
+        );
+
+        if (application) {
+          data = data.filter(
+            (item) => Number(item.applicationId) === Number(application.id),
+          );
+        } else {
+          data = [];
+        }
+      }
+
+      // Filter theo loại CV
+      if (params.cvType) {
+        data = data.filter((item) => item.cvType === params.cvType);
+      }
       if (response.success) {
         return {
-          data: response.data || [],
+          data,
           success: true,
-          total: response.data?.length || 0,
+          total: data?.length || 0,
         };
       }
-      
+
       return {
-        data: [],
+        data,
         success: false,
         total: 0,
       };
     } catch (error) {
-      message.error('Không thể tải danh sách documents: ' + error);
+      message.error("Không thể tải danh sách documents: " + error);
       return {
         data: [],
         success: false,
@@ -163,10 +189,42 @@ const Documents = () => {
       };
     }
   };
+  ("");
+
+  const fetchCertification = async () => {
+    try {
+      const res = await apiService.stamps.getAll();
+
+      if (res?.success === true) {
+        console.log("Fetched certifications:", res.data);
+        setCertifications(res.data);
+      } else {
+        message.error("Không thể tải danh sách chứng nhận:", res?.message);
+      }
+    } catch (error) {
+      message.error(
+        "Có lỗi xảy ra khi tải danh sách chứng nhận: " + error.message,
+      );
+
+      if (error.response) {
+        // Lỗi từ server (status 4xx, 5xx)
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        // Không nhận được response
+        console.error("No response received:", error.request);
+      } else {
+        // Lỗi khác
+        console.error("Error:", error.message);
+      }
+    }
+  };
+  useEffect(() => {
+    fetchCertification();
+  }, []);
 
   // Handle Add
   const handleAdd = () => {
-    setModalType('add');
+    setModalType("add");
     setCurrentRecord(null);
     form.resetFields();
     setModalVisible(true);
@@ -174,7 +232,7 @@ const Documents = () => {
 
   // Handle Edit
   const handleEdit = (record) => {
-    setModalType('edit');
+    setModalType("edit");
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
@@ -185,7 +243,7 @@ const Documents = () => {
 
   // Handle View
   const handleView = (record) => {
-    setModalType('view');
+    setModalType("view");
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
@@ -197,20 +255,20 @@ const Documents = () => {
   // Handle Delete
   const handleDelete = (record) => {
     Modal.confirm({
-      title: 'Xác nhận xóa',
+      title: "Xác nhận xóa",
       content: `Bạn có chắc chắn muốn xóa document "${record.documentTitle}"?`,
-      okText: 'Xóa',
-      okType: 'danger',
-      cancelText: 'Hủy',
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           const response = await apiService.documents.delete(record.id);
           if (response.success) {
-            message.success('Xóa document thành công!');
+            message.success("Xóa document thành công!");
             actionRef.current?.reload();
           }
         } catch (error) {
-          message.error('Xóa document thất bại: ' + error);
+          message.error("Xóa document thất bại: " + error);
         }
       },
     });
@@ -221,32 +279,37 @@ const Documents = () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-      
+
       const formattedValues = {
         ...values,
-        issueDate: values.issueDate ? values.issueDate.format('YYYY-MM-DD') : null,
+        issueDate: values.issueDate
+          ? values.issueDate.format("YYYY-MM-DD")
+          : null,
       };
 
-      if (modalType === 'add') {
+      if (modalType === "add") {
         const response = await apiService.documents.create(formattedValues);
         if (response.success) {
-          message.success('Thêm document thành công!');
+          message.success("Thêm document thành công!");
           setModalVisible(false);
           actionRef.current?.reload();
         }
-      } else if (modalType === 'edit') {
-        const response = await apiService.documents.update(currentRecord.id, formattedValues);
+      } else if (modalType === "edit") {
+        const response = await apiService.documents.update(
+          currentRecord.id,
+          formattedValues,
+        );
         if (response.success) {
-          message.success('Cập nhật document thành công!');
+          message.success("Cập nhật document thành công!");
           setModalVisible(false);
           actionRef.current?.reload();
         }
       }
     } catch (error) {
       if (error.errorFields) {
-        message.error('Vui lòng kiểm tra lại thông tin!');
+        message.error("Vui lòng kiểm tra lại thông tin!");
       } else {
-        message.error('Có lỗi xảy ra: ' + error);
+        message.error("Có lỗi xảy ra: " + error);
       }
     } finally {
       setLoading(false);
@@ -262,10 +325,10 @@ const Documents = () => {
           request={fetchDocuments}
           rowKey="id"
           search={{
-            labelWidth: 'auto',
-            searchText: 'Tìm kiếm',
-            resetText: 'Đặt lại',
-            submitText: 'Tìm',
+            labelWidth: "auto",
+            searchText: "Tìm kiếm",
+            resetText: "Đặt lại",
+            submitText: "Tìm",
             collapseRender: false,
           }}
           pagination={{
@@ -293,10 +356,10 @@ const Documents = () => {
             setting: true,
           }}
           locale={{
-            emptyText: 'Không có dữ liệu',
-            selectAll: 'Chọn tất cả',
-            selectInvert: 'Đảo ngược lựa chọn',
-            selectionAll: 'Chọn tất cả dữ liệu',
+            emptyText: "Không có dữ liệu",
+            selectAll: "Chọn tất cả",
+            selectInvert: "Đảo ngược lựa chọn",
+            selectionAll: "Chọn tất cả dữ liệu",
           }}
         />
 
@@ -308,6 +371,7 @@ const Documents = () => {
           form={form}
           modalType={modalType}
           loading={loading}
+          certifications={certifications}
         />
       </ConfigProvider>
     </AdminLayout>

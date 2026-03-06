@@ -1,102 +1,114 @@
-import { useRef, useState } from 'react';
-import { ProTable } from '@ant-design/pro-components';
-import { Button, message, Modal, Form, ConfigProvider, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import viVN from 'antd/locale/vi_VN';
-import AdminLayout from '../layout/AdminLayout';
-import ApplicationFormModal from '../components/ApplicationFormModal';
-import apiService from '../services/apiService';
-import dayjs from 'dayjs';
-import 'dayjs/locale/vi';
+import { useRef, useState } from "react";
+import { ProTable } from "@ant-design/pro-components";
+import { Button, message, Modal, Form, ConfigProvider, Tag } from "antd";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
+import viVN from "antd/locale/vi_VN";
+import AdminLayout from "../layout/AdminLayout";
+import ApplicationFormModal from "../components/ApplicationFormModal";
+import apiService from "../services/apiService";
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
 
-dayjs.locale('vi');
+dayjs.locale("vi");
 
 const Applications = () => {
   const actionRef = useRef();
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState('add');
+  const [modalType, setModalType] = useState("add");
   const [currentRecord, setCurrentRecord] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Columns definition
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
+      title: "ID",
+      dataIndex: "id",
       width: 60,
       search: false,
     },
-    
+
     {
-      title: 'Ngày nhận',
-      dataIndex: 'receiptDate',
+      title: "Ngày nhận",
+      dataIndex: "receiptDate",
       width: 120,
-      valueType: 'date',
-      render: (_, record) => record.receiptDate ? dayjs(record.receiptDate).format('DD/MM/YYYY') : '-',
+      valueType: "date",
+      render: (_, record) =>
+        record.receiptDate
+          ? dayjs(record.receiptDate).format("DD/MM/YYYY")
+          : "-",
     },
     {
-      title: 'Cơ quan giải quyết',
-      dataIndex: 'competentAuth',
+      title: "Cơ quan giải quyết",
+      dataIndex: "competentAuth",
       width: 200,
       ellipsis: true,
     },
     {
-      title: 'Ngày trả kết quả',
-      dataIndex: 'resultDate',
+      title: "Ngày trả kết quả",
+      dataIndex: "resultDate",
       width: 130,
-      valueType: 'date',
-      render: (_, record) => record.resultDate ? dayjs(record.resultDate).format('DD/MM/YYYY') : '-',
+      valueType: "date",
+      render: (_, record) =>
+        record.resultDate ? dayjs(record.resultDate).format("DD/MM/YYYY") : "-",
       hideInSearch: true,
     },
     {
-      title: 'Người ký',
-      dataIndex: 'certSignatory',
+      title: "Người ký",
+      dataIndex: "certSignatory",
       width: 150,
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: 'Chức danh',
-      dataIndex: 'signatoryTitle',
+      title: "Chức danh",
+      dataIndex: "signatoryTitle",
       width: 150,
       hideInSearch: true,
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
+      title: "Trạng thái",
+      dataIndex: "status",
       width: 120,
-      valueType: 'select',
+      valueType: "select",
       valueEnum: {
-        'PENDING': { text: 'Chờ xử lý', status: 'Default' },
-        'PROCESSING': { text: 'Đang xử lý', status: 'Processing' },
-        'APPROVED': { text: 'Đã duyệt', status: 'Success' },
-        'REJECTED': { text: 'Từ chối', status: 'Error' },
-        'COMPLETED': { text: 'Hoàn thành', status: 'Success' },
+        PENDING: { text: "Chờ xử lý", status: "Default" },
+        PROCESSING: { text: "Đang xử lý", status: "Processing" },
+        APPROVED: { text: "Đã duyệt", status: "Success" },
+        REJECTED: { text: "Từ chối", status: "Error" },
+        COMPLETED: { text: "Hoàn thành", status: "Success" },
       },
       render: (_, record) => {
         const statusConfig = {
-          'PENDING': { color: 'default', text: 'Chờ xử lý' },
-          'PROCESSING': { color: 'processing', text: 'Đang xử lý' },
-          'APPROVED': { color: 'success', text: 'Đã duyệt' },
-          'REJECTED': { color: 'error', text: 'Từ chối' },
-          'COMPLETED': { color: 'success', text: 'Hoàn thành' },
+          PENDING: { color: "default", text: "Chờ xử lý" },
+          PROCESSING: { color: "processing", text: "Đang xử lý" },
+          APPROVED: { color: "success", text: "Đã duyệt" },
+          REJECTED: { color: "error", text: "Từ chối" },
+          COMPLETED: { color: "success", text: "Hoàn thành" },
         };
-        const config = statusConfig[record.status] || { color: 'default', text: record.status };
+        const config = statusConfig[record.status] || {
+          color: "default",
+          text: record.status,
+        };
         return <Tag color={config.color}>{config.text}</Tag>;
       },
     },
     {
-      title: 'User ID',
-      dataIndex: 'userId',
+      title: "User ID",
+      dataIndex: "userId",
       width: 100,
       hideInTable: true,
     },
     {
-      title: 'Thao tác',
-      valueType: 'option',
+      title: "Thao tác",
+      valueType: "option",
       width: 150,
-      fixed: 'right',
+      fixed: "right",
       render: (_, record) => [
         <Button
           key="view"
@@ -134,22 +146,39 @@ const Applications = () => {
   const fetchApplications = async (params) => {
     try {
       const response = await apiService.applications.getAll();
-      
+      let data = response.data || [];
+      // Filter theo cơ quan giải quyết
+      if (params.competentAuth) {
+        data = data.filter((item) =>
+          item.competentAuth
+            ?.toLowerCase()
+            .includes(params.competentAuth.toLowerCase()),
+        );
+      }
+
+      // Filter theo ngày nhận
+      if (params.receiptDate) {
+        const searchDate = dayjs(params.receiptDate).format("YYYY-MM-DD");
+
+        data = data.filter(
+          (item) => dayjs(item.receiptDate).format("YYYY-MM-DD") === searchDate,
+        );
+      }
       if (response.success) {
         return {
-          data: response.data || [],
+          data,
           success: true,
           total: response.data?.length || 0,
         };
       }
-      
+
       return {
-        data: [],
+        data,
         success: false,
         total: 0,
       };
     } catch (error) {
-      message.error('Không thể tải danh sách applications: ' + error);
+      message.error("Không thể tải danh sách applications: " + error);
       return {
         data: [],
         success: false,
@@ -160,7 +189,7 @@ const Applications = () => {
 
   // Handle Add
   const handleAdd = () => {
-    setModalType('add');
+    setModalType("add");
     setCurrentRecord(null);
     form.resetFields();
     setModalVisible(true);
@@ -168,7 +197,7 @@ const Applications = () => {
 
   // Handle Edit
   const handleEdit = (record) => {
-    setModalType('edit');
+    setModalType("edit");
     setCurrentRecord(record);
 
     form.setFieldsValue({
@@ -181,7 +210,7 @@ const Applications = () => {
 
   // Handle View
   const handleView = (record) => {
-    setModalType('view');
+    setModalType("view");
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
@@ -194,20 +223,20 @@ const Applications = () => {
   // Handle Delete
   const handleDelete = (record) => {
     Modal.confirm({
-      title: 'Xác nhận xóa',
-      content: `Bạn có chắc chắn muốn xóa application "${record.applicationCode}"?`,
-      okText: 'Xóa',
-      okType: 'danger',
-      cancelText: 'Hủy',
+      title: "Xác nhận xóa",
+      content: `Bạn có chắc chắn muốn xóa application "${record.legalizationStamp.stampNumber}"?`,
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           const response = await apiService.applications.delete(record.id);
           if (response.success) {
-            message.success('Xóa application thành công!');
+            message.success("Xóa application thành công!");
             actionRef.current?.reload();
           }
         } catch (error) {
-          message.error('Xóa application thất bại: ' + error);
+          message.error("Xóa application thất bại: " + error);
         }
       },
     });
@@ -218,33 +247,40 @@ const Applications = () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-      
+
       const formattedValues = {
         ...values,
-        receiptDate: values.receiptDate ? values.receiptDate.format('YYYY-MM-DD') : null,
-        resultDate: values.resultDate ? values.resultDate.format('YYYY-MM-DD') : null,
+        receiptDate: values.receiptDate
+          ? values.receiptDate.format("YYYY-MM-DD")
+          : null,
+        resultDate: values.resultDate
+          ? values.resultDate.format("YYYY-MM-DD")
+          : null,
       };
 
-      if (modalType === 'add') {
+      if (modalType === "add") {
         const response = await apiService.applications.create(formattedValues);
         if (response.success) {
-          message.success('Thêm application thành công!');
+          message.success("Thêm application thành công!");
           setModalVisible(false);
           actionRef.current?.reload();
         }
-      } else if (modalType === 'edit') {
-        const response = await apiService.applications.update(currentRecord.id, formattedValues);
+      } else if (modalType === "edit") {
+        const response = await apiService.applications.update(
+          currentRecord.id,
+          formattedValues,
+        );
         if (response.success) {
-          message.success('Cập nhật application thành công!');
+          message.success("Cập nhật application thành công!");
           setModalVisible(false);
           actionRef.current?.reload();
         }
       }
     } catch (error) {
       if (error.errorFields) {
-        message.error('Vui lòng kiểm tra lại thông tin!');
+        message.error("Vui lòng kiểm tra lại thông tin!");
       } else {
-        message.error('Có lỗi xảy ra: ' + error);
+        message.error("Có lỗi xảy ra: " + error);
       }
     } finally {
       setLoading(false);
@@ -260,10 +296,10 @@ const Applications = () => {
           request={fetchApplications}
           rowKey="id"
           search={{
-            labelWidth: 'auto',
-            searchText: 'Tìm kiếm',
-            resetText: 'Đặt lại',
-            submitText: 'Tìm',
+            labelWidth: "auto",
+            searchText: "Tìm kiếm",
+            resetText: "Đặt lại",
+            submitText: "Tìm",
             collapseRender: false,
           }}
           pagination={{
@@ -291,10 +327,10 @@ const Applications = () => {
             setting: true,
           }}
           locale={{
-            emptyText: 'Không có dữ liệu',
-            selectAll: 'Chọn tất cả',
-            selectInvert: 'Đảo ngược lựa chọn',
-            selectionAll: 'Chọn tất cả dữ liệu',
+            emptyText: "Không có dữ liệu",
+            selectAll: "Chọn tất cả",
+            selectInvert: "Đảo ngược lựa chọn",
+            selectionAll: "Chọn tất cả dữ liệu",
           }}
         />
 
@@ -308,6 +344,7 @@ const Applications = () => {
           modalType={modalType}
           loading={loading}
           fetchApplications={fetchApplications}
+          reloadData={() => actionRef.current?.reload()}
         />
       </ConfigProvider>
     </AdminLayout>

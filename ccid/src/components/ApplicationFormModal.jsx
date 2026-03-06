@@ -26,24 +26,20 @@ const ApplicationFormModal = ({
   modalType,
   currentRecord, // truyền record khi edit
 
-  
   reloadData,
   fetchApplications, // callback reload table
 }) => {
-
   const [loading, setLoading] = React.useState(false);
-const [dataSource, setDataSource] = React.useState([]);
+  const [dataSource, setDataSource] = React.useState([]);
   const fetchData = async () => {
-
-
     let res = await apiService.stamps.getAll();
     if (res?.success === true) {
       setDataSource(res.data);
     }
-  }
+  };
   useEffect(() => {
     fetchData();
-  }, [])
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -59,8 +55,6 @@ const [dataSource, setDataSource] = React.useState([]);
           : null,
       };
 
-
-
       let response;
       setLoading(true);
       if (modalType === "add") {
@@ -68,14 +62,15 @@ const [dataSource, setDataSource] = React.useState([]);
       }
 
       if (modalType === "edit") {
-       
-        response = await apiService.applications.update(currentRecord.id, payload);
-
+        response = await apiService.applications.update(
+          currentRecord.id,
+          payload,
+        );
       }
 
       if (response.success) {
         message.success("Lưu thành công!");
-        fetchApplications()
+        reloadData(); // reload table
         form.resetFields();
         onCancel();
         setLoading(false);
@@ -85,15 +80,11 @@ const [dataSource, setDataSource] = React.useState([]);
       } else {
         message.error(response.message || "Có lỗi xảy ra!");
       }
-
     } catch (error) {
       console.log("API ERROR:", error);
-      message.error(
-        error.response?.data?.message || "Lưu thất bại!"
-      );
+      message.error(error.response?.data?.message || "Lưu thất bại!");
     } finally {
       setLoading(false);
-
     }
   };
 
@@ -122,18 +113,13 @@ const [dataSource, setDataSource] = React.useState([]);
       destroyOnClose
     >
       <Form form={form} layout="vertical" disabled={modalType === "view"}>
-
         <Divider orientation="left">
           <FileTextOutlined /> Thông tin hồ sơ
         </Divider>
 
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Form.Item
-              label="Hình thức nộp"
-              name="submissionMethod"
-
-            >
+            <Form.Item label="Hình thức nộp" name="submissionMethod">
               <Select placeholder="Chọn hình thức nộp">
                 <Select.Option value="Trực tiếp">Trực tiếp</Select.Option>
                 <Select.Option value="Qua bưu điện">Qua bưu điện</Select.Option>
@@ -142,13 +128,13 @@ const [dataSource, setDataSource] = React.useState([]);
             </Form.Item>
           </Col>
           <Col span={12}>
-          
-           <Form.Item
-              label="Thông tin Tem"
-              name="stampInfo"
-
-            >
-              <Select placeholder="Chọn thông tin Tem">
+            <Form.Item label="Thông tin Tem" name={["legalizationStamp", "id"]}>
+              <Select
+                placeholder="Chọn thông tin Tem"
+                disabled={modalType === "edit" || modalType === "view"}
+                showSearch
+                optionFilterProp="children"
+              >
                 {dataSource.map((item) => (
                   <Select.Option key={item.id} value={item.id}>
                     {item.signedBy}
@@ -178,7 +164,9 @@ const [dataSource, setDataSource] = React.useState([]);
             <Form.Item
               label="Ngày trả kết quả"
               name="resultDate"
-              rules={[{ required: true, message: "Vui lòng chọn ngày trả kết quả!" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày trả kết quả!" },
+              ]}
             >
               <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
             </Form.Item>
@@ -229,7 +217,6 @@ const [dataSource, setDataSource] = React.useState([]);
             </Form.Item>
           </Col>
         </Row>
-
       </Form>
     </Modal>
   );
