@@ -137,7 +137,7 @@ const ApplicationFormModal = ({
               >
                 {dataSource.map((item) => (
                   <Select.Option key={item.id} value={item.id}>
-                    {item.signedBy}
+                    {`${item.signedBy} - ${item.stampNumber}`}
                   </Select.Option>
                 ))}
               </Select>
