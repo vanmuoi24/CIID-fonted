@@ -149,7 +149,7 @@ const Documents = () => {
       let data = response.data || [];
       console.log("Fetched applications:", data);
       // Filter theo Application ID
-      if (params.applicationId) {
+      if (params?.applicationId) {
         const application = certifications.find(
           (app) => String(app.stampNumber) === String(params.applicationId),
         );
@@ -164,7 +164,7 @@ const Documents = () => {
       }
 
       // Filter theo loại CV
-      if (params.cvType) {
+      if (params?.cvType) {
         data = data.filter((item) => item.cvType === params.cvType);
       }
       if (response.success) {

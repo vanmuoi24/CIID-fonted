@@ -147,35 +147,29 @@ const Applications = () => {
     try {
       const response = await apiService.applications.getAll();
       let data = response.data || [];
-      // Filter theo cơ quan giải quyết
-      if (params.competentAuth) {
+
+      if (params?.competentAuth) {
         data = data.filter((item) =>
-          item.competentAuth
-            ?.toLowerCase()
-            .includes(params.competentAuth.toLowerCase()),
+          String(item.competentAuth || "")
+            .toLowerCase()
+            .includes(String(params.competentAuth).toLowerCase()),
         );
       }
 
-      // Filter theo ngày nhận
-      if (params.receiptDate) {
+      if (params?.receiptDate) {
         const searchDate = dayjs(params.receiptDate).format("YYYY-MM-DD");
 
         data = data.filter(
-          (item) => dayjs(item.receiptDate).format("YYYY-MM-DD") === searchDate,
+          (item) =>
+            item.receiptDate &&
+            dayjs(item.receiptDate).format("YYYY-MM-DD") === searchDate,
         );
-      }
-      if (response.success) {
-        return {
-          data,
-          success: true,
-          total: response.data?.length || 0,
-        };
       }
 
       return {
         data,
-        success: false,
-        total: 0,
+        success: response.success,
+        total: data.length,
       };
     } catch (error) {
       message.error("Không thể tải danh sách applications: " + error);
