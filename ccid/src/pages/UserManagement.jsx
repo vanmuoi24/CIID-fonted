@@ -10,6 +10,7 @@ import AddEditModal from "../components/AddEditModal";
 import ViewModal from "../components/ViewModal";
 import DeleteModal from "../components/DeleteModal";
 import apiService from "../services/apiService";
+import ImageModal from "../components/Image";
 
 dayjs.locale("vi");
 
@@ -24,7 +25,7 @@ const CertificationManagement = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  const [modalOpenImg , setModalOpenImg] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
@@ -158,6 +159,8 @@ const CertificationManagement = () => {
         >
           Xóa
         </a>,
+
+        
       ],
     },
   ];
@@ -184,6 +187,16 @@ const CertificationManagement = () => {
               }}
             >
               + Thêm mới
+            </Button>,
+
+            <Button
+              type="dashed"
+              key="addTemp"
+              onClick={() => {
+            setModalOpenImg(true);
+              }}
+            >
+              + Thêm mới ảnh vào temp
             </Button>,
           ]}
         />
@@ -215,6 +228,12 @@ const CertificationManagement = () => {
           onConfirm={handleDelete}
           record={selectedRecord}
         />
+
+        <ImageModal
+          open={modalOpenImg}
+          setOpen={setModalOpenImg}
+        />
+        
       </AdminLayout>
     </ConfigProvider>
   );

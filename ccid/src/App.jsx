@@ -7,6 +7,7 @@ import Documents from './pages/Documents';
 import ApplicationDetails from './pages/ApplicationDetails';
 import Home from './pages/Home';
 import Applications from './pages/Applications';
+import WordViewer from './layout/doc';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/admin/documents" element={<Documents />} />
         <Route path="/admin/settings" element={<Settings />} />
         <Route path="/admin/application" element={<Applications />} />
+        <Route path="/doc" element={<WordViewer />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
