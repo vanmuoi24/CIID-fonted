@@ -42,6 +42,7 @@ const apiService = {
     create: (data) => axiosInstance.post('/legalization-stamps', data),
     update: (id, data) => axiosInstance.put(`/legalization-stamps/${id}`, data),
     delete: (id) => axiosInstance.delete(`/legalization-stamps/${id}`),
+    getCodeId: (code) => axiosInstance.get(`/legalization-stamps/verify/${code}`),
   },
 };
 

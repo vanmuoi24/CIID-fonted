@@ -1,10 +1,37 @@
-import React from "react";
+import React, { use } from "react";
 import imgbgr from "../assets/bgrweb.jpg";
 import tem from "../assets/tem.png"
+import { useEffect } from "react";
+import apiService from "../services/apiService";
+
+import { data, useParams } from "react-router-dom";
 const Home = () => {
+
+    const [dataStamps, setDataStamps] = React.useState([]);
+    const { code } = useParams();
+    useEffect(() => {
+        fetchStamps();
+    }, []);
+
+    const fetchStamps = async () => {
+        try {
+            const response = await apiService.stamps.getCodeId(code);
+            if (response.success) {
+                setDataStamps(response.data || []);
+                console.log("Fetched stamps:", response.data);
+            }
+
+
+        } catch (error) {
+
+            message.error("Không thể tải danh sách stamps: " + error);
+        }
+    };
+
+
     return (
         <div
-            className="min-h-screen relative  px-4 bg-cover bg-center bg-no-repeat"
+            className="min-h-screen relative  px-5 bg-cover  "
             style={{ backgroundImage: `url(${imgbgr})` }}
         >
             {/* Overlay làm tối nền */}
@@ -43,11 +70,12 @@ const Home = () => {
                 </div>
 
                 {/* CONTENT */}
-          <div
-  className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"
+                <div
+                    className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch"
                     style={{
                         background: "#ffffffb5",
-                        margin: "20px",
+                    
+                        marginTop:" 30px",
                         padding: "10px 20px",
                         borderRadius: "16px",
                         border: "1px solid #d7d7d7",
@@ -63,6 +91,7 @@ const Home = () => {
                                 color: "#284393",
                                 fontSize: "16px",
                                 fontFamily: "Montserrat, sans-serif",
+                                marginTop:" 15px"
                             }}
                         >
                             Thông tin hồ sơ
@@ -72,14 +101,14 @@ const Home = () => {
                         </p>
 
                         {/* Box nội dung */}
-                <div className="bg-backgroundBlue py-4 px-4 flex-1" style={{
+                        <div className="bg-backgroundBlue py-2 px-5 flex-1" style={{
                             borderRadius: "16px",
-                            border: "1px solid #d7d7d7",
-                            marginTop: "25px",
+                            border: "0.3px solid #d7d7d7",
+                            marginTop: "18px",
                             flex: 1
 
                         }}>
-                            <div className="space-y-6 text-[17px] ">
+                            <div className="text-[17px] ">
                                 <div
                                     style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }}
                                     className="text-text">
@@ -88,29 +117,29 @@ const Home = () => {
                                         (Method of application submission):
                                     </span>
                                 </div>
-                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text">
-                                    Ngày nhận hồ sơ{" "}
-                                    <span className="italic 00">
-                                    </span>
-                                    <div className="font-bold text-lg mt-2" style={{ fontSize: '12px' }}>23/02/2026</div>
+
+                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text leading-tight mt-8">
+                                 Ngày nhận hồ sơ (Date of receipt):
+                                   
+                                    <div className="font-bold text-lg " style={{ fontSize: '12px' }}>{dataStamps?.application?.receiptDate}</div>
                                 </div>
-                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text">
+                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text leading-tight mt-5">
                                     Cơ quan giải quyết{" "}
-                                    <span className="italic text-gray-600">
+                               
                                         (Competent authority):
-                                    </span>
-                                    <div className="font-bold text-lg mt-2" style={{ fontSize: '12px' }}>Cục Lãnh sự</div>
+                               
+                                    <div className="font-bold text-lg " style={{ fontSize: '12px' }}>Cục Lãnh sự</div>
                                 </div>
 
-                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text">
-                                    Ngày trả kết quả{" "}
-                                    <span className="italic text-gray-600">
-                                        (Date of result return):
-                                    </span>
-                                    <div className="font-bold text-lg mt-2" style={{ fontSize: 12 }}>25/02/2026</div>
+                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text leading-tight mt-5">
+                                    Ngày trả kết quả  (Date of result return):
+                                  
+                                       
+                                    
+                                    <div className="font-bold text-lg" style={{ fontSize: 12 }}>{dataStamps?.application?.resultDate}</div>
                                 </div>
 
-                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text">
+                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text mt-5">
                                     Người ký chứng nhận{" "}
                                     <span className="italic text-gray-600">
                                         (Certifying signatory):
@@ -118,7 +147,7 @@ const Home = () => {
 
                                 </div>
 
-                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text">
+                                <div style={{ fontFamily: "Montserrat, sans-serif", color: "#242424", fontSize: "12px" }} className="text-text mt-8">
                                     Chức danh{" "}
                                     <span className="italic text-gray-600">
                                         (Title):
@@ -130,13 +159,14 @@ const Home = () => {
                         </div>
                     </div>
                     {/* CENTER CARD */}
-                 <div className="rounded-3xl flex flex-col h-full">
+                    <div className="rounded-3xl flex flex-col h-full">
                         {/* Title */}
                         <h3
                             className="font-bold"
                             style={{
                                 color: "#284393",
                                 fontSize: "16px",
+                                       marginTop:" 15px",
                                 fontFamily: "Montserrat, sans-serif",
                             }}
                         >
@@ -147,10 +177,10 @@ const Home = () => {
                         </p>
 
                         {/* Box nội dung */}
-                <div className="bg-backgroundBlue py-4 px-4 flex-1"style={{
+                        <div className="bg-backgroundBlue py-4 px-4 flex-1" style={{
                             borderRadius: "16px",
                             border: "1px solid #d7d7d7",
-                            marginTop: "25px",
+                      marginTop: "18px",
                             flex: 1
 
                         }}>
@@ -159,7 +189,7 @@ const Home = () => {
                                 {/* ===== Loại CV ===== */}
                                 <div className="mb-6">
                                     <p className="text-[12px] text-[#284393] font-bold">
-                                        Loại CV <span className="italic text-[#284393]" style={{ fontWeight: 400 }}>(Type of CV):</span> <b className="text-black font-bold">CNLS</b>
+                                        Loại CV <span className="italic text-[#284393]" style={{ fontWeight: 400 }}>(Type of CV):</span> <b className="text-black font-bold">{dataStamps?.document?.cvType}</b>
                                     </p>
 
                                 </div>
@@ -182,7 +212,7 @@ const Home = () => {
                                             </span>
                                         </p>
                                         <p className="font-bold mt-1">
-                                            Bằng cao đẳng/College Degree
+                                            {dataStamps?.document?.documentTitle}
                                         </p>
                                     </div>
 
@@ -193,7 +223,7 @@ const Home = () => {
                                                 (Document Type):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">Bản dịch</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.documentType}</p>
                                     </div>
 
                                     <div>
@@ -203,7 +233,7 @@ const Home = () => {
                                                 (Name of document holder):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">TRẦN PHÚC THỊNH</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.holderName}</p>
                                     </div>
 
                                     <div>
@@ -213,7 +243,7 @@ const Home = () => {
                                                 (Document reference number):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">15364</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.referenceNumber}</p>
                                     </div>
 
                                     <div>
@@ -223,7 +253,7 @@ const Home = () => {
                                                 (Date of issue):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">05/02/2026</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.issueDate}</p>
                                     </div>
 
                                 </div>
@@ -245,7 +275,7 @@ const Home = () => {
                                             </span>
                                         </p>
                                         <p className="font-bold mt-1">
-                                            VPCC Nguyễn Huệ, P. Ô Chợ Dừa, TP. Hà Nội
+                                            {dataStamps?.document?.certifyingAuthority}
                                         </p>
                                     </div>
 
@@ -256,7 +286,7 @@ const Home = () => {
                                                 (Signatory):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">Lê Như Tuân</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.certifyingSignatory}</p>
                                     </div>
 
                                     <div>
@@ -266,7 +296,7 @@ const Home = () => {
                                                 (Title):
                                             </span>
                                         </p>
-                                        <p className="font-bold mt-1">Phó Cục trưởng</p>
+                                        <p className="font-bold mt-1">{dataStamps?.document?.certifyingTitle}</p>
                                     </div>
 
                                 </div>
@@ -275,7 +305,7 @@ const Home = () => {
                         </div>
                     </div>
 
-                 <div className="rounded-3xl flex flex-col h-full">
+                    <div className="rounded-3xl flex flex-col h-full">
                         {/* Title */}
                         <h3
                             className="font-bold"
@@ -283,6 +313,7 @@ const Home = () => {
                                 color: "#284393",
                                 fontSize: "16px",
                                 fontFamily: "Montserrat, sans-serif",
+                                       marginTop:" 15px"
                             }}
                         >
                             Thông tin tem CNLS / HPHLS
@@ -292,20 +323,20 @@ const Home = () => {
                         </p>
 
                         {/* Box nội dung */}
-                       <div className="bg-backgroundBlue py-4 px-4 flex-1"style={{
+                        <div className="bg-backgroundBlue py-4 px-4 flex-1" style={{
                             borderRadius: "16px",
                             border: "1px solid #d7d7d7",
-                            marginTop: "25px",
+                       marginTop: "18px",
                             flex: 1
 
                         }}>
-                         
-                                <img
-                                    src={tem}
-                                    alt="Tem CNLS"
-                                    className="w-full h-auto object-contain  "
-                                />
-                       
+
+                            <img
+                                src={tem}
+                                alt="Tem CNLS"
+                                className="w-full h-auto object-contain  "
+                            />
+
 
                         </div>
                     </div>

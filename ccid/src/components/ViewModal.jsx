@@ -2,10 +2,23 @@ import React, { useRef } from "react";
 import { Modal, Button, message } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import html2canvas from "html2canvas";
-import logovn  from "../assets/logovn.svg"
+import logovn from "../assets/logovn.svg"
 const ViewModal = ({ open, onCancel, record }) => {
+    console.log("ViewModal record:", record);
     const printRef = useRef(null);
 
+
+    const dottedLine = {
+        flex: 1,
+        paddingBottom: "3px",
+        backgroundImage:
+            "repeating-linear-gradient(to right, black 0, black 2px, transparent 1px, transparent 4px)",
+        backgroundPosition: "bottom",
+        backgroundSize: "100% 2px",
+        backgroundRepeat: "no-repeat",
+        textAlign: "center",
+        marginBottom: "15px"
+    };
     const handleDownloadImage = async () => {
         if (!printRef.current) return;
 
@@ -56,9 +69,9 @@ const ViewModal = ({ open, onCancel, record }) => {
                 <div
                     style={{
                         width: "850px",
-                        minHeight: "1200px",
+                        minHeight: "1275px",
                         margin: "0 auto",
-                        paddingTop: "99px", // moved inside so html2canvas captures it
+                        paddingTop: "120px", // moved inside so html2canvas captures it
                         padding: "40px 50px",
                         background: "#fff",
                         fontFamily: "Times New Roman, serif",
@@ -164,156 +177,365 @@ const ViewModal = ({ open, onCancel, record }) => {
 
                     {/* CONTENT */}
                     <div style={{ marginBottom: "30px" }}>
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>1. Quốc gia</span>
+                        <div style={{ marginBottom: "20px" }}>
+                            {/* Dòng 1 */}
+                            <div style={{ display: "flex", alignItems: "flex-end" }}>
+
+                                <div style={{ width: "75px", lineHeight: "1.2" }}>
+                                    <div style={{ fontWeight: "bold", marginTop: "4px" }} className="text-center"> 1. Quốc gia</div>
+                                    <div style={{ fontSize: "11px", fontStyle: "italic" }} className="leading-tight text-center">
+                                        Country
+                                    </div>
+                                </div>
+
+                                <div
+                                    style={{
+                                        flex: 1,
+                                        paddingBottom: "2px",
+                                        backgroundImage:
+                                            "repeating-linear-gradient(to right, black 0, black 2px, transparent 1px, transparent 4px)",
+                                        backgroundPosition: "bottom",
+                                        backgroundSize: "1000% 2px",
+                                        backgroundRepeat: "no-repeat",
+                                        textAlign: "center",
+                                        marginBottom: "15px"
+                                    }}
+                                >
+                                    <span style={{ fontWeight: "bold text-center" }}>{record?.country}</span>
+                                </div>
+
                             </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.country}</span>
-                            </div>chỉnh 
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "15px", marginLeft: "200px" }}>
-                            Country
+
+                            {/* Tiêu đề document */}
+                            <div style={{ textAlign: "center", marginTop: "18px", lineHeight: "1.3" }}>
+
+                                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                                    Giấy tờ, tài liệu này
+                                </div>
+
+                                <div style={{ fontStyle: "italic", fontSize: "11px" }}>
+                                    This public document
+                                </div>
+
+                            </div>
                         </div>
 
-                        <div style={{ textAlign: "center", fontWeight: "bold", marginBottom: "5px" }}>
-                            {record.document}
-                        </div>
-                        <div style={{ textAlign: "center", fontStyle: "italic", fontSize: "10px", marginBottom: "15px" }}>
-                            This public document
+                        <div style={{ marginBottom: "10px" }}>
+                            <div style={{ display: "flex", alignItems: "flex-end" }}>
+
+                                {/* Bên trái */}
+                                <div style={{ width: "90px", lineHeight: "1.2" }}>
+                                    <div style={{ fontWeight: "bold" }}>2. do ông (bà)</div>
+                                    <div style={{ fontSize: "11px", fontStyle: "italic" }}>
+                                        has been signed by
+                                    </div>
+                                </div>
+
+                                {/* Dòng chấm + tên */}
+                                <div
+                                    style={{
+                                        flex: 1,
+                                        position: "relative",
+                                        margin: "0 8px",
+                                        paddingBottom: "3px",
+                                        backgroundImage:
+                                            "repeating-linear-gradient(to right, black 0, black 2px, transparent 1px, transparent 4px)",
+                                        backgroundPosition: "bottom",
+                                        backgroundSize: "1000% 2px",
+                                        backgroundRepeat: "no-repeat",
+                                        textAlign: "center",
+                                        marginBottom: "15px"
+                                    }}
+                                >
+                                    <span style={{ fontWeight: "bold", background: "#fff", padding: "0 8px" }}>
+                                        {record?.signedBy}
+                                    </span>
+                                </div>
+
+                                {/* chữ ký */}
+                                <div style={{ width: "14px", fontWeight: "bold", marginBottom: "15px" }}>
+                                    ký
+                                </div>
+
+                            </div>
                         </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>2. do {prefix}</span>
+                        <div style={{ marginBottom: "12px" }}>
+                            <div style={{ display: "flex", alignItems: "flex-end" }}>
+
+                                {/* Label */}
+                                <div style={{ width: "107px", lineHeight: "1.2" }}>
+                                    <div style={{ fontWeight: "bold" }}>3. với chức danh</div>
+                                    <div style={{ fontSize: "11px", fontStyle: "italic" }}>
+                                        acting in the capacity of
+                                    </div>
+                                </div>
+
+                                {/* Dòng chấm + dữ liệu */}
+                                <div
+                                    style={dottedLine}
+                                >
+                                    <span style={{ fontWeight: "bold", background: "#fff", padding: "0 8px" }}>
+                                        {record?.signedTitle}
+                                    </span>
+                                </div>
                             </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.signedBy}</span>
-                            </div>
-                            <span style={{ fontWeight: "bold", marginLeft: "10px" }}>ký</span>
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "15px", marginLeft: "200px" }}>
-                            has been signed by
                         </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>3. với chức danh</span>
+
+
+                        <div style={{ marginBottom: "12px" }}>
+                            <div style={{ display: "flex", alignItems: "flex-end" }}>
+
+                                {/* Label */}
+                                <div style={{ width: "107px", lineHeight: "1.2" }}>
+                                    <div style={{ fontWeight: "bold" }}>4.và con dấu của</div>
+                                    <div style={{ fontSize: "11px", fontStyle: "italic" }}>
+                                        bear the seal/stamp of
+                                    </div>
+                                </div>
+
+                                {/* Dòng chấm + dữ liệu */}
+                                <div
+                                    style={dottedLine}
+                                >
+                                    <span style={{ fontWeight: "bold", background: "#fff", padding: "0 8px" }}>
+                                        {record?.notaryOffice}
+                                    </span>
+                                </div>
                             </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.capacity}</span>
-                            </div>
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "15px", marginLeft: "200px" }}>
-                            acting in the capacity of
                         </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>4. và con dấu của</span>
-                            </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.sealOf}</span>
-                            </div>
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "15px", marginLeft: "200px" }}>
-                            bear the seal/stamp of
-                        </div>
 
-                        <div style={{ textAlign: "center", fontWeight: "bold", marginBottom: "15px" }}>
+                        <div style={{ textAlign: "center", fontWeight: "bold", marginBottom: "3px" }}>
                             được chứng nhận lãnh sự
                         </div>
-                        <div style={{ textAlign: "center", fontSize: "10px", marginBottom: "20px", fontStyle: "italic" }}>
+
+                        <div
+                            style={{
+                                textAlign: "center",
+                                fontSize: "10px",
+                                fontStyle: "italic",
+                                marginBottom: "20px"
+                            }}
+                        >
                             Certified
                         </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "150px" }}>
-                                <span style={{ fontWeight: "bold" }}>5. tại</span>
+                        {/* 5 & 6 */}
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "flex-end",
+                                marginBottom: "6px",
+                            }}
+                        >
+                            {/* 5. tại */}
+                            <div style={{ width: "70px", fontWeight: "bold" }}>
+                                5. tại
                             </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.at}</span>
-                            </div>
-                            <div style={{ width: "100px", marginLeft: "20px" }}>
-                                <span style={{ fontWeight: "bold" }}>6. ngày</span>
-                            </div>
-                            <div style={{ width: "150px", borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.date}</span>
-                            </div>
-                        </div>
-                        <div style={{ display: "flex", fontSize: "10px", marginBottom: "20px" }}>
-                            <div style={{ width: "150px" }}>at the</div>
-                            <div style={{ flex: 1 }}></div>
-                            <div style={{ width: "100px", marginLeft: "20px" }}></div>
-                            <div style={{ width: "150px" }}></div>
-                        </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>7. Cơ quan cấp</span>
+                            <div
+                                style={{
+                                    width: "220px",
+                                    textAlign: "center",
+                                    backgroundImage:
+                                        "repeating-linear-gradient(to right, black 0, black 2px, transparent 2px, transparent 6px)",
+                                    backgroundPosition: "bottom",
+                                    backgroundSize: "100% 2px",
+                                    backgroundRepeat: "no-repeat",
+                                    paddingBottom: "2px",
+                                }}
+                            >
+                                <span style={{ fontWeight: "bold" }}>{record?.at}</span>
                             </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.issuedBy}</span>
-                            </div>
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "15px", marginLeft: "200px" }}>
-                            by
-                        </div>
 
-                        <div style={{ display: "flex", marginBottom: "12px" }}>
-                            <div style={{ width: "200px" }}>
-                                <span style={{ fontWeight: "bold" }}>8. Số</span>
-                            </div>
-                            <div style={{ flex: 1, borderBottom: "1px dotted #000", paddingBottom: "2px" }}>
-                                <span style={{ fontWeight: "bold" }}>{record.number}</span>
-                            </div>
-                        </div>
-                        <div style={{ fontSize: "10px", marginBottom: "20px", marginLeft: "200px" }}>
-                            No.
-                        </div>
-                    </div>
+                            {/* khoảng cách giữa 5 và 6 */}
+                            <div style={{ width: "40px" }}></div>
 
-                    {/* BOTTOM SECTION */}
-                    <div style={{ display: "flex", marginTop: "40px" }}>
-                        {/* LEFT SIDE - QR & REMARKS */}
-                        <div style={{ width: "200px", marginRight: "20px" }}>
-                            <div style={{ marginBottom: "15px", textAlign: "center" }}>
-                                <div style={{ width: "80px", height: "80px", background: "#f0f0f0", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px" }}>
-                                    QR Code
-                                </div>
+                            {/* 6. ngày */}
+                            <div style={{ width: "70px", fontWeight: "bold" }}>
+                                6. ngày
                             </div>
-                            <div style={{ fontSize: "10px", fontWeight: "bold", marginBottom: "5px" }}>
-                                9. Ghi chú
-                            </div>
-                            <div style={{ fontSize: "9px", lineHeight: "1.3", textAlign: "justify" }}>
-                                <p style={{ margin: "0 0 5px 0" }}>
-                                    Remarks
-                                </p>
-                                <p style={{ margin: "0", fontSize: "8px" }}>
-                                    This certificate does not certify the content or the form of the document for which it was issued; This certificate is valid for use abroad only.
-                                </p>
+
+                            <div
+                                style={{
+                                    width: "200px",
+                                    textAlign: "center",
+                                    backgroundImage:
+                                        "repeating-linear-gradient(to right, black 0, black 2px, transparent 2px, transparent 6px)",
+                                    backgroundPosition: "bottom",
+                                    backgroundSize: "100% 2px",
+                                    backgroundRepeat: "no-repeat",
+                                    paddingBottom: "2px",
+                                }}
+                            >
+                                <span style={{ fontWeight: "bold" }}>{record?.date}</span>
                             </div>
                         </div>
 
-                        {/* RIGHT SIDE - SIGNATURE */}
-                        <div style={{ flex: 1 }}>
-                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                                <div style={{ textAlign: "center" }}>
-                                    <div style={{ marginBottom: "80px", height: "80px" }}>
-                                        <div style={{ fontStyle: "italic", fontSize: "11px", marginBottom: "5px" }}>
-                                            Ký tên và đóng dấu
-                                        </div>
-                                    </div>
-                                    <div style={{ borderTop: "1px solid #000", paddingTop: "10px", minWidth: "150px" }}>
-                                        <div style={{ fontWeight: "bold", fontSize: "12px", marginBottom: "2px" }}>
-                                            {record.signedBy || ""}
-                                        </div>
-                                        <div style={{ fontSize: "10px" }}>
-                                            Head of Division
-                                        </div>
+                        {/* English line */}
+                        <div
+                            style={{
+                                display: "flex",
+                                fontSize: "10px",
+                                fontStyle: "italic",
+                                marginBottom: "18px",
+                            }}
+                        >
+                            <div style={{ width: "70px" }}></div>
+                            <div style={{ width: "220px" }}>at the</div>
+
+                            <div style={{ width: "40px" }}></div>
+
+                            <div style={{ width: "70px" }}></div>
+                            <div style={{ width: "200px" }}></div>
+                        </div>
+
+
+                        <div style={{ marginBottom: "12px" }}>
+                            <div style={{ display: "flex", alignItems: "flex-end" }}>
+
+                                {/* Label */}
+                                <div style={{ width: "107px", lineHeight: "1.2" }}>
+                                    <div style={{ fontWeight: "bold" }}>7.Cơ quan cấp</div>
+                                    <div style={{ fontSize: "11px", fontStyle: "italic" }}>
+                                        by
                                     </div>
                                 </div>
+
+                                {/* Dòng chấm + dữ liệu */}
+                                <div
+                                    style={dottedLine}
+                                >
+                                    <span style={{ fontWeight: "bold", background: "#fff", padding: "0 8px" }}>
+                                        {record?.consularDepartment}
+                                    </span>
+                                </div>
                             </div>
+                        </div>
+
+                        {/* ROW 8 */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "25px" }}>
+
+                            {/* LEFT - NUMBER */}
+                            <div style={{ flex: 1 }}>
+                                <div style={{ display: "flex", alignItems: "flex-end" }}>
+                                    <span style={{ fontWeight: "bold", marginRight: "6px" }}>8. Số</span>
+
+                                    <div
+                                        style={{
+                                            flex: 1,
+                                            position: "relative",
+                                            height: "18px",
+                                            marginRight: "40px"
+                                        }}
+                                    >
+                                        {/* dotted line */}
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "3px",
+                                                width: "100%",
+                                                height: "2px",
+                                                backgroundImage:
+                                                    "repeating-linear-gradient(to right,#000 0,#000 3px,transparent 3px,transparent 6px)"
+                                            }}
+                                        />
+
+                                        <span
+                                            style={{
+                                                position: "relative",
+                                                background: "#fff",
+                                                paddingRight: "6px",
+                                                fontWeight: "bold"
+                                            }}
+                                        >
+                                            {record?.number}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div style={{ fontSize: "10px", fontStyle: "italic", marginTop: "2px" }}>
+                                    No.
+                                </div>
+                            </div>
+
+                            {/* RIGHT - SIGNATURE TITLE */}
+                            <div style={{ textAlign: "center", width: "200px" }}>
+                                <div style={{ fontWeight: "bold" }}>Ký tên và đóng dấu</div>
+                                <div style={{ fontSize: "10px", fontStyle: "italic" }}>
+                                    Signature and seal/stamp
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {/* BOTTOM SECTION */}
+                        <div style={{ display: "flex", marginTop: "10px" }}>
+
+                            {/* LEFT SIDE */}
+                            <div style={{ width: "320px", display: "flex" }}>
+
+                                {/* QR */}
+                                <div style={{ marginRight: "10px" }}>
+                                    <div
+                                        style={{
+                                            width: "90px",
+                                            height: "90px",
+                                            background: "#f2f2f2",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            fontSize: "10px"
+                                        }}
+                                    >
+                                        QR
+                                    </div>
+                                </div>
+
+                                {/* REMARKS */}
+                                <div style={{ fontSize: "10px" }}>
+                                    <div style={{ fontWeight: "bold" }}>9. Ghi chú</div>
+                                    <div style={{ fontStyle: "italic", marginBottom: "3px" }}>
+                                        Remarks
+                                    </div>
+
+                                    <div style={{ fontSize: "9px", lineHeight: "1.3", maxWidth: "190px" }}>
+                                        This certificate does not certify the content or the form of the
+                                        document for which it was issued; This certificate is valid for use
+                                        abroad only.
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            {/* RIGHT SIDE SIGNATURE */}
+                            <div style={{ flex: 1, textAlign: "center" }}>
+
+                                {/* SIGN AREA */}
+                                <div style={{ height: "90px", marginBottom: "10px" }}>
+                                    {record?.signatureImage && (
+                                        <img
+                                            src={record.signatureImage}
+                                            style={{ maxHeight: "80px" }}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* NAME */}
+                                <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+                                    {record?.signedBy}
+                                </div>
+
+                                {/* TITLE */}
+                                <div style={{ fontSize: "11px" }}>
+                                    Head of Division
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
 

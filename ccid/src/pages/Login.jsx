@@ -26,7 +26,7 @@ function Login() {
         if (user.role === "ADMIN") {
           navigate("/admin/dashboard");
         } else {
-          navigate("/user/dashboard");
+          navigate("/admin/dashboard");
         }
       } else {
         message.error(response.message || "Đăng nhập thất bại!");
