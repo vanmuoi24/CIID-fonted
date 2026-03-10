@@ -5,9 +5,14 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 export default defineConfig({
   plugins: [
     react(),
-    viteStaticCopy({
-      targets: [{ src: "public/_redirects", dest: "" }],
-    }),
+   viteStaticCopy({
+  targets: [
+    {
+      src: "public/_redirects",
+      dest: ".",
+    },
+  ],
+})
   ],
   build: {
     outDir: "dist",
