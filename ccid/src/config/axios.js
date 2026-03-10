@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response;
       
-      if (status === 401) {
+      if (status === 403) {
         // Token hết hạn hoặc không hợp lệ
         // Xóa user info và redirect về login
         localStorage.removeItem('user');

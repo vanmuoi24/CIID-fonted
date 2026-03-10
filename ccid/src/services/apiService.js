@@ -11,6 +11,14 @@ const apiService = {
     delete: (id) => axiosInstance.delete(`/users/${id}`),
   },
 
+  signatures: {
+  getAll: () => axiosInstance.get('/signatures'),
+  getById: (id) => axiosInstance.get(`/signatures/${id}`),
+  create: (data) => axiosInstance.post('/signatures', data),
+  update: (id, data) => axiosInstance.put(`/signatures/${id}`, data),
+  delete: (id) => axiosInstance.delete(`/signatures/${id}`),
+},
+
   // ============ APPLICATION APIs ============
   applications: {
     getAll: () => axiosInstance.get('/applications'),
@@ -43,6 +51,30 @@ const apiService = {
     update: (id, data) => axiosInstance.put(`/legalization-stamps/${id}`, data),
     delete: (id) => axiosInstance.delete(`/legalization-stamps/${id}`),
     getCodeId: (code) => axiosInstance.get(`/legalization-stamps/verify/${code}`),
+
+    searchStamp: (data) => axiosInstance.post(`/stamps/search`, data),
+
+
+    updateImage: (id, formData) => {
+      return axiosInstance.put(
+        `/legalization-stamps/${id}/image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      );
+
+    },
+
+   getQR: (id) => {
+    return axiosInstance.get(`/legalization-stamps/${id}/qr`, {
+        responseType: "blob"
+    });
+}
+
+
   },
 };
 

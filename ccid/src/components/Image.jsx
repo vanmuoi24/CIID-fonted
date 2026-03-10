@@ -1,54 +1,105 @@
-import React, { useEffect } from "react";
-import { Modal, Upload, Button, Form, Input, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Modal, Upload, Button, Form, Select, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import apiService from "../services/apiService";
 
 const ImageModal = ({ open, setOpen }) => {
+
     const [form] = Form.useForm();
-    const [dataSource, setDataSource] = React.useState([]);
-    const handleSubmit = () => {
-        form.validateFields().then((values) => {
-            console.log("DATA:", values);
-            setOpen(false);
-            form.resetFields();
-        });
-    };
+    const [dataSource, setDataSource] = useState([]);
+    const [file, setFile] = useState(null);
+    const [fileList, setFileList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
+    const handleSubmit = async () => {
+        try {
 
-    const fetchData = async () => {
-        let res = await apiService.stamps.getAll();
-        if (res?.success === true) {
-            setDataSource(res.data);
+            const values = await form.validateFields();
+
+            if (!file) {
+                message.error("Vui lòng chọn ảnh");
+                return;
+            }
+
+            setLoading(true);
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await apiService.stamps.updateImage(values.stampId, formData);
+
+            if (res) {
+                message.success("Upload thành công");
+
+                form.resetFields();
+                setFile(null);
+                setFileList([]);
+
+                setOpen(false);
+            }
+
+        } catch (error) {
+            console.log(error);
+            message.error("Upload thất bại");
+        } finally {
+            setLoading(false);
         }
     };
+
+    const fetchData = async () => {
+        try {
+            const res = await apiService.stamps.getAll();
+            if (res?.success) {
+                setDataSource(res.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (open) {
+            fetchData();
+        }
+    }, [open]);
+
+    const handleCancel = () => {
+        setOpen(false);
+        form.resetFields();
+        setFile(null);
+        setFileList([]);
+    };
 
     return (
         <Modal
             title="Thêm ảnh vào Temp"
             open={open}
-            onCancel={() => setOpen(false)}
+            onCancel={handleCancel}
             width={500}
             footer={[
-                <Button key="cancel" onClick={() => setOpen(false)}>
+                <Button key="cancel" onClick={handleCancel}>
                     Hủy
                 </Button>,
-                <Button key="submit" type="primary" onClick={handleSubmit}>
+                <Button
+                    key="submit"
+                    type="primary"
+                    loading={loading}
+                    onClick={handleSubmit}
+                >
                     Lưu
                 </Button>,
             ]}
         >
+
             <Form form={form} layout="vertical">
 
-                {/* Chọn Ông/Bà */}
+                {/* Chọn stamp */}
                 <Form.Item
-                    label="Danh xưng"
-                    name="gender"
-                    rules={[{ required: true, message: "Vui lòng chọn Ông/Bà" }]}
+                    label="Chọn người ký"
+                    name="stampId"
+                    rules={[{ required: true, message: "Vui lòng chọn" }]}
                 >
-                    <Select placeholder="Chọn ông bà cần thêm ảnh">
+                    <Select placeholder="Chọn người cần thêm ảnh">
                         {dataSource.map((item) => (
                             <Select.Option key={item.id} value={item.id}>
                                 {`${item.signedBy} - ${item.stampNumber}`}
@@ -57,21 +108,30 @@ const ImageModal = ({ open, setOpen }) => {
                     </Select>
                 </Form.Item>
 
-                {/* Tên */}
-
-
                 {/* Upload ảnh */}
                 <Form.Item label="Hình ảnh">
                     <Upload
-                        name="file"
                         listType="picture"
-                        beforeUpload={() => false}
+                        fileList={fileList}
+                        beforeUpload={(file) => {
+                            setFile(file);
+                            setFileList([file]);
+                            return false;
+                        }}
+                        onRemove={() => {
+                            setFile(null);
+                            setFileList([]);
+                        }}
+                        maxCount={1}
                     >
-                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                        <Button icon={<UploadOutlined />}>
+                            Chọn ảnh
+                        </Button>
                     </Upload>
                 </Form.Item>
 
             </Form>
+
         </Modal>
     );
 };

@@ -236,7 +236,7 @@ const Documents = () => {
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
-      issueDate: record.issueDate ? dayjs(record.issueDate) : null,
+      issueDate: record.issueDate.format("DD/MM/YYYY") ? dayjs(record.issueDate) : null,
     });
     setModalVisible(true);
   };
@@ -279,7 +279,6 @@ const Documents = () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-
       const formattedValues = {
         ...values,
         issueDate: values.issueDate

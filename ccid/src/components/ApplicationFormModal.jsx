@@ -201,7 +201,7 @@ const ApplicationFormModal = ({
             <Form.Item
               label="Người ký chứng nhận"
               name="certSignatory"
-              rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
+            
             >
               <Input prefix={<UserOutlined />} />
             </Form.Item>
@@ -211,7 +211,7 @@ const ApplicationFormModal = ({
             <Form.Item
               label="Chức danh người ký"
               name="signatoryTitle"
-              rules={[{ required: true, message: "Vui lòng nhập chức danh!" }]}
+              
             >
               <Input />
             </Form.Item>

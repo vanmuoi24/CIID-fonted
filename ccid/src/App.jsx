@@ -8,6 +8,7 @@ import ApplicationDetails from './pages/ApplicationDetails';
 import Home from './pages/Home';
 import Applications from './pages/Applications';
 import WordViewer from './layout/doc';
+import Verify from './pages/Verify';
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/verify/:code" element={<Home />} />
+        <Route path="/verify" element={<Verify />} />
+
 
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/users" element={<UserManagement />} />

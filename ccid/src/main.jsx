@@ -4,6 +4,7 @@ import "@ant-design/v5-patch-for-react-19";
 
 import App from "./App.jsx";
 import "./index.css";
+import "devextreme/dist/css/dx.light.css";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />

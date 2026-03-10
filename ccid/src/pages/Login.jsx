@@ -45,11 +45,9 @@ function Login() {
   return (
     <div className="login-container">
       <Card className="login-card">
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center"  , fontSize:"24px" , color:"blue"}}>
           <h2>Đăng nhập</h2>
-          <p style={{ color: "#666" }}>
-            Hệ thống quản lý hợp pháp hóa lãnh sự
-          </p>
+          
         </div>
 
         <Form

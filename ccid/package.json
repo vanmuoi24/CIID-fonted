@@ -14,6 +14,8 @@
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "axios": "^1.13.5",
     "dayjs": "^1.11.19",
+    "devextreme": "^25.2.5",
+    "devextreme-react": "^25.2.5",
     "html2canvas": "^1.4.1",
     "mammoth": "^1.11.0",
     "react": "^19.2.0",

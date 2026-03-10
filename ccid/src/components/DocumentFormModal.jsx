@@ -73,11 +73,10 @@ const DocumentFormModal = ({
                 disabled={modalType !== "add"} // Không cho phép thay đổi certification khi edit
                 options={certifications?.map((item) => ({
                   value: item.id,
-                  label: `${
-                    item.stampNumber
-                      ? `${item.signedBy} - ${item.stampNumber}`
-                      : item.signedBy
-                  }`,
+                  label: `${item.stampNumber
+                    ? `${item.signedBy} - ${item.stampNumber}`
+                    : item.signedBy
+                    }`,
                 }))}
               ></Select>
             </Form.Item>
@@ -87,13 +86,9 @@ const DocumentFormModal = ({
             <Form.Item
               label="Loại CV"
               name="cvType"
-              rules={[{ required: true, message: "Vui lòng chọn loại CV!" }]}
+              rules={[{ required: true, message: "Vui lòng nhập loại CV!" }]}
             >
-              <Select placeholder="Chọn loại CV">
-                <Select.Option value="CNLS">CNLS</Select.Option>
-                <Select.Option value="HPLS">HPLS</Select.Option>
-                <Select.Option value="OTHER">Khác</Select.Option>
-              </Select>
+              <Input placeholder="Nhập loại CV" />
             </Form.Item>
           </Col>
 
@@ -102,14 +97,10 @@ const DocumentFormModal = ({
               label="Loại giấy tờ"
               name="documentType"
               rules={[
-                { required: true, message: "Vui lòng chọn loại giấy tờ!" },
+                { required: true, message: "Vui lòng nhập loại giấy tờ!" },
               ]}
             >
-              <Select placeholder="Chọn loại giấy tờ">
-                <Select.Option value="Bản chính">Bản chính</Select.Option>
-                <Select.Option value="Bản sao">Bản sao</Select.Option>
-                <Select.Option value="Bản dịch">Bản dịch</Select.Option>
-              </Select>
+              <Input placeholder="Nhập loại giấy tờ" />
             </Form.Item>
           </Col>
         </Row>
@@ -132,7 +123,7 @@ const DocumentFormModal = ({
 
           <Col span={8}>
             <Form.Item
-              label="Số tham chiếu"
+              label="Số hiệu của giấy tờ "
               name="referenceNumber"
               rules={[
                 { required: true, message: "Vui lòng nhập số tham chiếu!" },
@@ -151,7 +142,7 @@ const DocumentFormModal = ({
         <Row gutter={16}>
           <Col span={16}>
             <Form.Item
-              label="Người giữ"
+              label="Người cấp giấy tờ"
               name="holderName"
               rules={[
                 { required: true, message: "Vui lòng nhập tên người giữ!" },
@@ -188,7 +179,7 @@ const DocumentFormModal = ({
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label="Cơ quan chứng thực"
+              label="Cơ quan "
               name="certifyingAuthority"
               rules={[
                 {
@@ -222,7 +213,7 @@ const DocumentFormModal = ({
             <Form.Item
               label="Chức danh"
               name="certifyingTitle"
-              rules={[{ required: true, message: "Vui lòng nhập chức danh!" }]}
+
             >
               <Input placeholder="VD: Công chứng viên" />
             </Form.Item>
