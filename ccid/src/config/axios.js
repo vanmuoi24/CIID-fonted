@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tạo axios instance với cấu hình mặc định
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api/v1/',
+  baseURL: 'https://ciid-backend.onrender.com/api/v1/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
