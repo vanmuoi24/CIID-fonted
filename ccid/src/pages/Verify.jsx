@@ -13,11 +13,11 @@ const Verify = () => {
     let navigate = useNavigate();
 
     const [captchaUrl, setCaptchaUrl] = useState(
-        `http://localhost:8080/api/captcha?${Date.now()}`
+        `https://ciid-backend.onrender.com/api/captcha?${Date.now()}`
     );
 
     const reloadCaptcha = () => {
-        setCaptchaUrl(`http://localhost:8080/api/captcha?${Date.now()}`);
+        setCaptchaUrl(`https://ciid-backend.onrender.com/api/captcha?${Date.now()}`);
         setCaptcha(""); // Clear captcha input when reloading
     };
 
